@@ -1,0 +1,88 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Business{
+  id String @id @default(uuid())
+  name String
+  createdAt DateTime @default(now())
+
+  accounts Account[]
+  transactions Transaction[]
+}
+
+enum AccountType{
+    CASH
+    BANK
+    CREDIT_CARD
+    DEBIT_CARD
+    OTHER
+  }
+
+
+model Account{
+  id String @id @default(uuid())
+  name String
+  type AccountType
+
+  business Business @relation(fields: [businessId], references: [id])
+  businessId String
+
+  transactions Transaction[]
+
+  createdAt DateTime @default(now())
+}
+
+
+enum CategoryType{
+  INCOME
+  COGS
+  OPEX
+}
+
+model Category{
+  id String @id @default(uuid())
+  name String
+  type CategoryType
+
+  transactions Transaction[]
+  
+  createdAt DateTime @default(now())
+}
+
+enum Direction{
+  INCOME
+  EXPENSE
+}
+
+model Transaction{
+  id String @id @default(uuid())
+
+  business Business @relation(fields:[businessId], references:[id])
+  businessId String
+  category Category @relation(fields:[categoryId], references:[id])
+  categoryId String
+
+  account Account @relation(fields:[accountId] ,references:[id])
+  accountId String
+
+  amount Int
+  direction Direction
+  date DateTime @default(now())
+  merchant_name String?
+  description String?
+  source String?
+
+  createdAt DateTime @default(now())
+}
