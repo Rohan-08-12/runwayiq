@@ -1,16 +1,20 @@
-import { Controller, Post, UploadedFile , UseInterceptors } from '@nestjs/common';
+import { Controller, Post, UploadedFile, UseInterceptors, Query } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { TransactionsService } from './transactions.service';
 
 @Controller('transactions')
 export class TransactionsController {
 
-    constructor(private readonly transactionsService : TransactionsService){}
+    constructor(private readonly transactionsService: TransactionsService) { }
 
     @Post('upload')
     @UseInterceptors(FileInterceptor('file'))
-    uploadTransactions(@UploadedFile() file: Express.Multer.File) {
-        return this.transactionsService.uploadTransactions(file);
+    uploadTransactions(
+        @UploadedFile() file: Express.Multer.File,
+        @Query('businessId') businessId: string,
+        @Query('accountId') accountId: string
+    ) {
+        return this.transactionsService.uploadTransactions(file, businessId, accountId);
     }
-    
+
 }
