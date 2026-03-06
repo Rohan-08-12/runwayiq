@@ -41,4 +41,12 @@ export class TransactionsService {
 
         return { message: 'File uploaded successfully', count: record.length };
     }
+
+    async getTransactions(businessId: string) {
+        return this.prisma.transaction.findMany({
+            where: {
+                businessId: businessId
+            }
+        })
+    }
 }

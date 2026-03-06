@@ -1,4 +1,4 @@
-import { Controller, Post, UploadedFile, UseInterceptors, Query } from '@nestjs/common';
+import { Controller, Post, UploadedFile, UseInterceptors, Query, Get } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { TransactionsService } from './transactions.service';
 
@@ -15,6 +15,11 @@ export class TransactionsController {
         @Query('accountId') accountId: string
     ) {
         return this.transactionsService.uploadTransactions(file, businessId, accountId);
+    }
+
+    @Get('all')
+    getAllTransactions(@Query('businessId') businessId: string) {
+        return this.transactionsService.getTransactions(businessId);
     }
 
 }
